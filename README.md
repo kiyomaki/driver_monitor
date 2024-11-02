@@ -20,7 +20,7 @@ My research at Fujii Laboratory, Chiba Institute of Technology
 眠気を感知した際に、画面に「ASLEEP!」と警告を表示する。
 
 ## 関連資料
-(https://drive.google.com/file/d/1FxO-S0b8_OqBZ4B1R20dwaLAiu_UgDOq/view?usp=sharing)
+https://drive.google.com/file/d/1FxO-S0b8_OqBZ4B1R20dwaLAiu_UgDOq/view?usp=sharing
 
 ## 著作権
 - © 2024 Makishi Kiyosawa
