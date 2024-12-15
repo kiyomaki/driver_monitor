@@ -7,6 +7,7 @@ from attention_scorer import AttentionScorer as AttScorer
 from eye_detector import EyeDetector as EyeDet
 from parser import get_args
 from utils import get_landmarks, load_camera_parameters
+from csv_handler import CSVHandler  # CSVHandlerをインポート
 
 def initialize_camera(camera_id):
     cap = cv2.VideoCapture(camera_id)
@@ -21,7 +22,7 @@ def process_frame(frame, Detector, Eye_det, Scorer, args, camera_matrix, dist_co
     lms = Detector.process(gray).multi_face_landmarks
 
     if not lms:
-        return frame, None, None
+        return frame, None, None, None
 
     landmarks = get_landmarks(lms)
     Eye_det.show_eye_keypoints(color_frame=frame, landmarks=landmarks, frame_size=frame.shape[1::-1])
@@ -44,10 +45,16 @@ def process_frame(frame, Detector, Eye_det, Scorer, args, camera_matrix, dist_co
     # Display PERCLOS score
     cv2.putText(frame, "PERCLOS:" + str(round(perclos_score, 3)), (10, 110), cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 1, cv2.LINE_AA)
 
-    return frame, ear, perclos_score
+    return frame, ear, perclos_score, asleep
 
 def main():
     args = get_args()
+
+    # ユーザーにCSVファイル名を入力させる
+    output_file = CSVHandler.get_user_filename()  # CSVHandlerの静的メソッドを 利用
+    csv_handler = CSVHandler(output_file)
+    csv_handler.write_header()
+
     if not cv2.useOptimized():
         try:
             cv2.setUseOptimized(True)
@@ -89,6 +96,8 @@ def main():
 
     cap = initialize_camera(args.camera)
     prev_time = time.perf_counter()
+    prev_state = None
+    last_output_time = time.time()
 
     while True:
         ret, frame = cap.read()
@@ -101,9 +110,17 @@ def main():
         prev_time = t_now
         fps = np.round(1 / elapsed_time, 3) if elapsed_time > 0 else 0
 
-        frame, ear, perclos_score = process_frame(frame, Detector, Eye_det, Scorer, args, camera_matrix, dist_coeffs, fps)
+        frame, ear, perclos_score, asleep = process_frame(frame, Detector, Eye_det, Scorer, args, camera_matrix, dist_coeffs, fps)
         if frame is None:
             continue
+
+        current_state = "Asleep" if asleep else "Awake"
+        timestamp = time.strftime("%H:%M:%S")
+
+        # 1秒ごとに結果を出力
+        if time.time() - last_output_time >= 1:
+            csv_handler.append_row(timestamp, perclos_score, current_state)
+            last_output_time = time.time()
 
         if args.show_fps:
             cv2.putText(frame, "FPS:" + str(round(fps)), (10, 400), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 255), 1)
@@ -120,4 +137,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
