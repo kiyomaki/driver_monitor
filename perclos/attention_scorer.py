@@ -1,8 +1,8 @@
-import time
-
 class AttentionScorer:
-    def __init__(self, t_now, ear_thresh, gaze_thresh, perclos_thresh=0.03, roll_thresh=20, pitch_thresh=20, yaw_thresh=20,
-                 ear_time_thresh=0.3, gaze_time_thresh=2.0, pose_time_thresh=4.0, verbose=False):
+    def __init__(self, t_now, gaze_thresh, ear_thresh,  perclos_thresh=0.03, 
+                 ear_time_thresh=0.2, gaze_time_thresh=2.0, pose_time_thresh=4.0, verbose=False,  
+                # roll_thresh=20, pitch_thresh=20, yaw_thresh=20,  
+                ):
         self.PERCLOS_TIME_PERIOD = 60
         self.ear_thresh = ear_thresh = 0.2
         self.perclos_thresh = perclos_thresh
