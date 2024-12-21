@@ -32,13 +32,16 @@ class CSVHandler:
     @staticmethod
     def get_user_filename(default_name="perclos_output.csv"):
         """ユーザーからCSVファイル名を入力させる"""
+        # 保存先ディレクトリを指定
+        output_dir = r"C:\Users\maxim\driving_monitor\PERCLOS_csv"
+        os.makedirs(output_dir, exist_ok=True)  # ディレクトリが存在しない場合は作成
+
         while True:
-            base_filename = input(f"Enter the base name for the CSV file (e.g., '{default_name}', default: '{default_name}'): ").strip()
+            base_filename = input(f"CSVファイル名を入力 (default: '{default_name}'): ").strip()
             if not base_filename:
                 base_filename = default_name
             # 無効な文字が含まれていないかをチェック
             if any(char in base_filename for char in r"<>:\"/\\|?*"):
-                print("Invalid characters in file name. Please try again.")
+                print("使えない文字が含まれています．再度入力してください．")
             else:
-                return CSVHandler.get_unique_filename(base_filename)
-
+                return CSVHandler.get_unique_filename(os.path.join(output_dir, base_filename))

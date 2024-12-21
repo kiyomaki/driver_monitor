@@ -52,4 +52,3 @@ class AttentionScorer:
             self.prev_time = t_now
 
         return tired, perclos_score
-
