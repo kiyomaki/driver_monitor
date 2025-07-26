@@ -33,7 +33,7 @@ class CSVHandler:
     def get_user_filename(default_name="perclos_output.csv"):
         """ユーザーからCSVファイル名を入力させる"""
         # 保存先ディレクトリを指定
-        output_dir = r"C:\Users\maxim\driving_monitor\PERCLOS_csv"
+        output_dir = r"C:\Users\maxim\driving_monitor\perclos\PERCLOS_csv"
         os.makedirs(output_dir, exist_ok=True)  # ディレクトリが存在しない場合は作成
 
         while True:
